@@ -1,5 +1,6 @@
 from socket import *
 from subprocess import call
+import re
 
 
 
@@ -38,8 +39,15 @@ def main():
 
 		#Matlab Methods
 		if (repr(data)== "'Matlab'"):
-			conn.sendall("Please enter the method name and arguments foo(a,b)")
+			conn.sendall("Please enter the method name and arguments foo(a,b)\n")
 			data=conn.recv(1024)
+			func=re.findall(r'\'.*\'',repr(data))
+			if (len(data) > 0):
+				func = func[0]
+				func = func[1:-1]
+				print func + " PRINTED BY ME"
+				eval(func)
+				conn.sendall("Simulation successful, the published document was sent to your email.")
 			#if (repr(data)=="''"):
 			#	conn, addr = s.accept()
 
@@ -50,15 +58,17 @@ def main():
 
 
 
+
 			if (repr(data) == "'ssh'"):
 				print "!!!!"
 				sshtest(1,2)
+				
 
 
 def sshtest(a, b):
-	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','/Applications/MATLAB_R2012a.app/bin/matlab','-noawt', '-nodesktop','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','test(1,2)','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
-	call (['sshpass','-p','1qaz','scp','lsxliron@192.168.1.32:/Users/lsxliron/Desktop/temp.pdf','/home/lsxliron/Desktop/temp.pdf'])
-	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','rm','/Users/lsxliron/Desktop/temp.pdf'])
+	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','/Applications/MATLAB_R2012a.app/bin/matlab','-noawt', '-nodesktop','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','test("+str(a)+","+str(b)+")','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+	call (['sshpass','-p','1qaz','scp','lsxliron@192.168.1.32:/Users/lsxliron/Desktop/test.pdf','/home/lsxliron/Desktop/temp.pdf'])
+	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','rm','/Users/lsxliron/Desktop/test.pdf'])
 	call (['python',"/home/lsxliron/Desktop/1.py"])
 
 

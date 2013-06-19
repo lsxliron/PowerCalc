@@ -48,6 +48,20 @@ def main():
 				testMethod(1,2)
 
 
+
+
+			if (repr(data) == "'ssh'"):
+				print "!!!!"
+				sshtest(1,2)
+
+
+def sshtest(a, b):
+	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','/Applications/MATLAB_R2012a.app/bin/matlab','-noawt', '-nodesktop','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','test(1,2)','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+	call (['sshpass','-p','1qaz','scp','lsxliron@192.168.1.32:/Users/lsxliron/Desktop/temp.pdf','/home/lsxliron/Desktop/temp.pdf'])
+	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','rm','/Users/lsxliron/Desktop/temp.pdf'])
+	call (['python',"/home/lsxliron/Desktop/1.py"])
+
+
 def testMethod(a, b):
 	call (['/Applications/MATLAB_R2012a.app/bin/matlab','-noawt', '-nodesktop','-nosplash','-r', "publish('test.m',struct('codeToEvaluate','test(1,2)','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit"])
 

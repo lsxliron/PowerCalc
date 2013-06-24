@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load dajaxice_templatetags %}
+<html>
+	<head>
+		
+		{% dajaxice_js_import %}
+		{% csrf_token %}
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}pc_man.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="{{STATIC_URL}}dajax/jquery.dajax.core.js"></script>
+		<title>Clients and Softwares</title>
+		
+		<script type="text/javascript">
+			$(document).ready(function (){
+				$("label").click(function(){
+					alert($("#clientName").val());
+				});
+
+				$("#clientSubmit").click(function(){
+					$.ajax({
+						success: Dajaxice.pc_man.sayhello(my_js_callback,
+								{clientName:$("#clientName").val(),
+								 clientUsername:$("#clientUsername").val(),
+								 clientPassword:$("#clientPassword").val(),
+								 clientIP:$("#clientIP").val(),
+								 clientPort:$("#clientPort").val(),
+								 clientOS:$("#clientOS").val()
+
+							}),
+								 
+						dataType:"html"
+					});
+				});
+			});
+
+			function my_js_callback(data){
+			    alert(data.message);
+			}
+		
+		</script>
+	</head>
+	<body>
+		<p>place holder for instructions</p> 
+		{{STATIC_URL}}dajax/jquery.dajax.core.js
+		<h3>Client Form</h3>
+		<form method="POST" id="clientForm">{% csrf_token %}
+			<label> Client Name:</label>
+			<input type="text" id="clientName"><br>
+			<label> Client Username:</label>
+			<input type="text" id="clientUsername"><br>
+			<label> Client Password:</label>
+			<input type="password" id="clientPassword"><br>
+			<label> Client IP:</label>
+			<input type="text" id="clientIP"><br>
+			<label> Client Port:</label>
+			<input type="text" id="clientPort"><br>
+			<label> Client OS:</label>
+			<select id="clientOS">
+				<option value="UNIX">Unix</option>
+				<option value="WINDOWS">Windows</option>	
+			</select><br>
+			<!-- <input type="Button" id="clientSubmit" value="Add Client" style="width:100px" onclick="Dajaxice.pc_man.sayhello(my_js_callback);" >  -->
+			<input type="Button" id="clientSubmit" value="Add Client" style="width:100px" > 
+		</form>
+		<br>
+
+		<h3>Software Form</h3>
+		<form method="POST" id="SoftwareForm">
+			<label> Software Name:</label>
+			<input type="text" id="softwareName"><br>
+			<label> Software Client:</label>
+			<input type="text" id="softwareClient"><br>
+			<label> Software Path:</label>
+			<input type="file" id="softwarePath"><br>	<!-- CHANGE TO DROPDOWN LIST OF CLIENTS -->
+			<input type="submit" id="swSubmit" value="Add Software" style="width:100px"> 
+		</form>
+
+		<h3>Matlab Form</h3>
+		<form method="POST" id="matlabForm">
+			<label> Command Keyword:</label>
+			<input type="text" id="keyword"><br>
+			<label> m File Path:</label>
+			<input type="text" id="mFilePath"><br>
+			<label> Output Directory:</label>
+			<input type="text" id="outputDir"><br>
+			<label> Client:</label>
+			<input type="text" id="matlabClient"><br>
+			<label> Software:</label>
+			<input type="text" id="matlabSW"><br>
+			<input type="submit" id="matlabSubmit" value="Add Command" style="width:100px"> 
+		</form>
+
+		
+	</body>
+</html>

@@ -11,8 +11,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'pcdb.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -69,6 +69,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    '/static/',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -84,12 +85,12 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'aiz!6rru%2hpf_%vaeh)^@jjn9)^*ctkz7)()(q*ajcn)-9=g%'
+SECRET_KEY = '$4&4o%q@ub^!lky7_l$b9q1zlo9zenm2#k@eo_o#ws87(a&uqs'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.app_directories.Loader',    
     'django.template.loaders.eggs.Loader',
 )
 
@@ -123,13 +124,17 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'dajaxice',
     'dajax',
-    'home',
+    'pc_manage',
+    'pc_main',
     'pc_man',
+    'home',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    #'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+#DAJAX INSTALLATION
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
@@ -138,7 +143,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages'
-)
+    )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

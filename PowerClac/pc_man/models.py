@@ -24,8 +24,6 @@ class client(models.Model):
 	client_os = models.CharField(max_length=8,choices =  OS_CHOCIES)
 	
     
-	def __unicode__(self):
-		return self.client_name
 
 	def save(self, *args, **kwargs):
 		print "OVERWRITE!!!!!!"
@@ -37,22 +35,6 @@ class software(models.Model):
 	software_name = models.CharField(max_length=10, choices = SW_CHOICES)
 	software_test = models.FilePathField(path="/")
 
-	def __unicode__(self):
-		return self.software_name
-
-
-	def save(self, *args, **kwargs):
-		try:
-			print "YRS"
-			print self.path
-			#self.software_test = self.software_test.path
-			super(software,self).save(*args, **kwargs) 
-		except:
-			print "XXXX"
-
-	def signals(self):
-		print "SIGNAL"
-
 
 class matlab_command(models.Model):
 	command_keyword = models.CharField(max_length=50)
@@ -60,7 +42,3 @@ class matlab_command(models.Model):
 	output_path = models.CharField(max_length=50)
 	client_name = models.ForeignKey(client)
 	software_name = models.ForeignKey(software)
-
-
-	def __unicode__(self):
-		return self.command_keyword

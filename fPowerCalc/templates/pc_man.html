@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="{{ url_for('static', filename='pc_man.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/pc_man.css') }}">
 		
-		<script type="text/javascript" src="{{ url_for('static', filename='jquery-1.10.1.js') }}"></script>
-		// <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='JQuery/jquery-1.10.1.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='JQuery/scripts.js') }}"></script>
 		<title>Clients and Softwares</title>
 		
 		
 	</head>
 	<body>
-		<a href="#">click</a>
 		<p>place holder for instructions</p> 
-		{{STATIC_URL}}dajax/jquery.dajax.core.js
 		<h3>Client Form</h3>
 		<form method="POST" id="clientForm">
 			<label> Client Name:</label>
@@ -31,8 +28,8 @@
 				<option value="UNIX">Unix</option>
 				<option value="WINDOWS">Windows</option>	
 			</select><br>
-			<!-- <input type="Button" id="clientSubmit" value="Add Client" style="width:100px" onclick="Dajaxice.pc_man.sayhello(my_js_callback);" >  -->
 			<input type="Button" id="clientSubmit" value="Add Client" style="width:100px" > 
+			<span id="clientSuccessSpan"></span>
 		</form>
 		<br>
 

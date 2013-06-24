@@ -1,17 +1,21 @@
 from flask import Flask, render_template, url_for, jsonify, request
+from flask.ext.sqlalchemy import SQLAlchemy
 import re
+import database
+
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
-	url_for('static', filename='pc_man.css')
+	database.create_db_if_not_exists()
 	return render_template("index.html")
 
 
 @app.route('/pc_man/')
 def config():
-	url_for('static', filename='pc_man.css')
+	# url_for('static', filename='pc_man.css')
 	return render_template('pc_man.html')
 
 
@@ -29,10 +33,16 @@ def add_client_to_db():
 	port_valid = False	#for database enteries
 	ip_err_msg = ''
 	port_err_msg = ''
-	#Validate fields
-	#clientName, clientUsername,clientOS and clientPassword- doesn't need to be validated.
+	general_err = ''
+	success_msg = '-1'
+	
+	'''
+	Validate fields
+	clientName, clientUsername,clientOS and clientPassword- doesn't need to be validated.
+	
 
-	#validate IP
+	validate IP
+	'''
 	valid_ip_address_regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 
 	m = re.compile(valid_ip_address_regex)
@@ -44,7 +54,9 @@ def add_client_to_db():
 		ip_err_msg = 'IP is not valid.\n'
 
 
-	#Validate port:
+	'''
+	Validate port:
+	'''
 	try:
 		clientPort = int(clientPort)
 		port_valid = True
@@ -52,9 +64,15 @@ def add_client_to_db():
 	except:
 		port_err_msg = "Port is not valid."
 
+	#Create insertion to database.
+	if ip_valid and port_valid:
+		insert = database.insert_client_to_database(clientName, clientUsername, clientPassword, clientIP, clientPort, clientOS)
+		if insert == 1:
+			general_err = 'The IP address you provided already in the database.'
 
-	print "\nError: "+ port_err_msg
-	print clientPort
+	if ip_valid and port_valid and general_err=='':
+		success_msg = 0
+	#return back to jQuery
 	return jsonify(clientName = clientName,
 				   clientUsername = clientUsername,
 				   clientPassword = clientPassword,
@@ -62,7 +80,9 @@ def add_client_to_db():
 				   clientPort = clientPort,
 				   clientOS = clientOS,
 				   ip_err_msg = ip_err_msg,
-				   port_err_msg = port_err_msg
+				   port_err_msg = port_err_msg,
+				   general_err = general_err,
+				   success_msg = success_msg
 				   )
 
 

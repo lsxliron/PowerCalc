@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import MetaData
+from sqlalchemy.ext.hybrid import hybrid_property
 
 Base = declarative_base()
 metadata = MetaData()
@@ -14,10 +15,10 @@ class Client(Base):
 	'''
 	__tablename__='Client'
 	
-	name = Column(String(50))
+	name = Column(String(50), primary_key=True)
 	username = Column(String(50))
 	password = Column(String(50))
-	IP = Column(String(16), primary_key=True)
+	IP = Column(String(16), unique=True)
 	port = Column(Integer)
 	OS = Column(String(8))
 
@@ -28,6 +29,40 @@ class Client(Base):
 		self.IP = IP
 		self.port = port
 		self.OS =OS
+
+	@hybrid_property
+	def get_client_name_and_ip(self):
+		return self.name + " (" + self.IP + ")"
+
+	@hybrid_property
+	def get_client_name(self):
+		return self.name
+
+	@hybrid_property
+	def get_os(self):
+		return self.OS
+
+	
+
+class Software(Base):
+	'''
+	This class represents the software which runs on a client computer.
+	'''
+
+	__tablename__ = 'Software'
+
+	name = Column(String(50))
+	client_name = Column(String(50),ForeignKey("Client.name"), primary_key=True)
+	path = Column(String(100), primary_key=True)
+
+	def __init__(self,name,my_client,path):
+		self.name = name
+		self.my_client = my_client
+		self.path = path
+
+	
+
+
 
 
 def create_db_if_not_exists():
@@ -61,4 +96,60 @@ def insert_client_to_database(name, username, password, IP, port, OS):
 	
 	except IntegrityError:
 		return 1
+
+
+def get_clients():
+	'''
+	This function returns a list of all the clients which are in the database
+	'''
+	session = get_session()
+	clients_list = list()
+	for row in session.query(Client).all():
+		clients_list.append(row.get_client_name)
+
+	return clients_list
+
+def get_clients_and_ip():
+	'''
+	Returns a list of strings with all the clients and their corresponding ip addresses
+	'''
+	session = get_session()
+	client_and_ip_list = list()
+	for row in session.query(Client).all():
+		client_and_ip_list.append(row.get_client_name_and_ip)
+
+	return client_and_ip_list
+
+def get_client_os(client):
+	'''
+	Returns a list with the client's OS
+	'''
+	print "_______________________"+client
+	session = get_session()
+	for row in  session.query(Client).filter(Client.name == client):
+		clientOS = row.get_os
+
+	return clientOS
+
+
+
+
+
+
+
+def get_session():
+	'''
+	Returns a session for the database
+	'''
+	engine = get_engine()
+	Session = sessionmaker(bind=engine)
+	session = Session()
+	return session
+
+def get_engine():
+	'''
+	Returns engine for connection with the database
+	'''
+	return  create_engine("mysql://lsxliron@localhost/PowerCalc", isolation_level="READ_UNCOMMITTED", echo=True)
+
 	

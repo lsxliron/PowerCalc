@@ -52,16 +52,54 @@ $(document).ready(function ()
 				$("#clientSuccessSpan").text('')
 			}
 			
-
-		
-
 			//alert($('input[id=clientName]').val());
 			
 			//$("input[id=clientIP]").val(data.clientUsername);
 
+		})
+	});
+	
+	//adds a software to the database
+	$("#swSubmit").click(function()
+	{
+		$.getJSON('/_pc_man_add_sw',
+		{
+			softwareName:$("#softwareName").val(),
+			clientName:$("#softwareClient").val(),
+			softwarePath:$("#softwarePath").val()
+		},
+		function(data)
+		{
+
 		});
 
-
-
+		
 	});
+
+
+	//Enables and disables the software version dropdown list
+	$("#softwareClient").change(function()
+	{
+		$.getJSON('/_pc_man_sw',
+		{
+			clientName:$("#softwareClient").val()
+		},
+		function(data)
+		{
+			console.log(data.os);
+			if (data.os == "WINDOWS")
+			{
+				$("#softwarePath").attr('disabled',true);
+			}
+			else
+			{
+				$("#softwarePath").attr('disabled',false);	
+			}
+
+		});
+	});
+
+
+
+	//});
 });

@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, jsonify, request
 from flask.ext.sqlalchemy import SQLAlchemy
 import re
 import database
+import os
 
 
 app = Flask(__name__)
@@ -15,8 +16,15 @@ def index():
 
 @app.route('/pc_man/')
 def config():
-	# url_for('static', filename='pc_man.css')
-	return render_template('pc_man.html')
+	#clients = 
+	#clients_and_ip = 
+	clients_dict = dict(zip(database.get_clients(),database.get_clients_and_ip()))
+	print clients_dict
+	
+
+
+
+	return render_template('pc_man.html',clients = clients_dict)
 
 
 @app.route("/_pc_man/")
@@ -84,6 +92,19 @@ def add_client_to_db():
 				   general_err = general_err,
 				   success_msg = success_msg
 				   )
+
+@app.route('/_pc_man_sw/')
+def config1():
+	client = request.args.get('clientName','',type=str)
+	os = database.get_client_os(client)
+	return jsonify(os = os)
+
+@app.route('/_pc_man_add_sw/')
+def add_software_to_db():
+	print request.args.get('softwareName','',type=str)
+	print request.args.get('clientName','',type=str)
+	print request.args.get('softwarePath','',type=str)
+
 
 
 

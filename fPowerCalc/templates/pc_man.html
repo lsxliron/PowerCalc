@@ -5,11 +5,14 @@
 		
 		<script type="text/javascript" src="{{ url_for('static', filename='JQuery/jquery-1.10.1.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='JQuery/scripts.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='JQuery/purl.js') }}"></script>
 		<title>Clients and Softwares</title>
 		
 		
 	</head>
+
 	<body>
+		<input type="hidden" id="hid">
 		<p>place holder for instructions</p> 
 		<h3>Client Form</h3>
 		<form method="POST" id="clientForm">
@@ -28,21 +31,36 @@
 				<option value="UNIX">Unix</option>
 				<option value="WINDOWS">Windows</option>	
 			</select><br>
-			<input type="Button" id="clientSubmit" value="Add Client" style="width:100px" > 
+			<input type="button" id="clientSubmit" value="Add Client" style="width:100px" > 
 			<span id="clientSuccessSpan"></span>
 		</form>
 		<br>
 
 		<h3>Software Form</h3>
 		<form method="POST" id="SoftwareForm">
-			<label> Software Name:</label>
-			<input type="text" id="softwareName"><br>
-			<label> Software Client:</label>
-			<input type="text" id="softwareClient"><br>
-			<label> Software Path:</label>
-			<input type="file" id="softwarePath"><br>	<!-- CHANGE TO DROPDOWN LIST OF CLIENTS -->
-			<input type="submit" id="swSubmit" value="Add Software" style="width:100px"> 
+			<label> Software:</label>
+			<select id="softwareName"> 
+				<option value="Matlb">Matlb</option>
+			</select><br>
+			<label>Client:</label>
+			<select id="softwareClient">
+				{% for key, value in clients.iteritems() %}
+					<option value = "{{ key }}">{{ value }}</option>
+				{% endfor %}
+			</select><br>
+			<label> Software Version:</label>
+			<select id="softwarePath">
+				<option value="/Applications/MATLAB_R2012b.app/bin">R2012b (Version 8.00) 2012</option>
+				<option value="/Applications/MATLAB_R2012a.app/bin">R2012a (Version 7.14) 2012</option>
+				<option value="/Applications/MATLAB_R2011b.app/bin">R2011b (Version 7.13) 2011</option>
+				<option value="/Applications/MATLAB_R2011a.app/bin">R2011a (Version 7.12) 2011</option>
+				<option value="/Applications/MATLAB_R2010b.app/bin">R2010b (Version 7.11) 2010</option>
+			</select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDisabled if clients OS is Windows<br>
+			<input type="button" id="swSubmit" value="Add Software" style="width:200px"> 
+			<sapn id="swSuccessSpan"></span>
+			
 		</form>
+		
 
 		<h3>Matlab Form</h3>
 		<form method="POST" id="matlabForm">

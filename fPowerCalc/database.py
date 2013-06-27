@@ -51,13 +51,13 @@ class Software(Base):
 
 	__tablename__ = 'Software'
 
-	name = Column(String(50))
-	client_name = Column(String(50),ForeignKey("Client.name"), primary_key=True)
-	path = Column(String(100), primary_key=True)
+	name = Column(String(50), primary_key=True)
+	client_name = Column(String(50), primary_key=True)
+	path = Column(String(100),primary_key=True)
 
 	def __init__(self,name,my_client,path):
 		self.name = name
-		self.my_client = my_client
+		self.client_name = my_client
 		self.path = path
 
 	
@@ -81,13 +81,10 @@ def create_db_if_not_exists():
 
 def insert_client_to_database(name, username, password, IP, port, OS):
 	'''
-	Adds a client computer to the datbase
+	Adds a client computer to the database
 	'''
 	try:
-		engine = create_engine("mysql://lsxliron@localhost/PowerCalc", isolation_level="READ_UNCOMMITTED", echo=True)
-		Session = sessionmaker(bind=engine)
-		session = Session()
-		conn = engine.connect()
+		session = get_session()
 		new_entry = Client(name, username, password, IP, int(port), OS)
 
 		session.add(new_entry)
@@ -124,15 +121,30 @@ def get_client_os(client):
 	'''
 	Returns a list with the client's OS
 	'''
-	print "_______________________"+client
 	session = get_session()
+	clientOS=str()
 	for row in  session.query(Client).filter(Client.name == client):
 		clientOS = row.get_os
 
 	return clientOS
 
 
+def add_software_to_database(sw_name, client_name, sw_path):
+	'''
+	Insert a software to the database database
+	'''
+	print "______" +  sw_name +" ||||||||| "+client_name+" ||||||||| "+sw_path+"___________"
+	try:
+		session = get_session()
 
+
+		new_entry = Software(sw_name, str(client_name), sw_path)
+		session.add(new_entry)
+		session.commit()
+		return 0
+
+	except IntegrityError:
+		return 1
 
 
 

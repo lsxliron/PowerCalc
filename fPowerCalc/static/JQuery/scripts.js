@@ -70,6 +70,17 @@ $(document).ready(function ()
 		},
 		function(data)
 		{
+			if (data.err_msg == "")
+			{
+				$("#swSuccessSpan").text('Software added successfuly');
+				$("#swSuccessSpan").css({'color':'GREEN'});
+			}
+
+			else
+			{
+				$("#swSuccessSpan").text(data.err_msg);
+				$("#swSuccessSpan").css({'color':'RED'});
+			}
 
 		});
 

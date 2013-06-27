@@ -16,14 +16,7 @@ def index():
 
 @app.route('/pc_man/')
 def config():
-	#clients = 
-	#clients_and_ip = 
 	clients_dict = dict(zip(database.get_clients(),database.get_clients_and_ip()))
-	print clients_dict
-	
-
-
-
 	return render_template('pc_man.html',clients = clients_dict)
 
 
@@ -101,9 +94,23 @@ def config1():
 
 @app.route('/_pc_man_add_sw/')
 def add_software_to_db():
-	print request.args.get('softwareName','',type=str)
-	print request.args.get('clientName','',type=str)
-	print request.args.get('softwarePath','',type=str)
+	software_name = request.args.get('softwareName','',type=str)
+	client_name = request.args.get('clientName','',type=str)
+	software_path = request.args.get('softwarePath','',type=str)
+	print software_name +" ||||||||| "+client_name+" ||||||||| "+software_path
+	err_msg = ''
+	os = database.get_client_os(client_name)
+	#print "||||||||||"+os+"|||||||||||"
+	if (os == 'WINDOWS'):
+		software_path = "matlab"
+
+	res = database.add_software_to_database(software_name, client_name, software_path)
+
+	if (res == 1): #FAILIURE
+		err_msg = 'Software already exists for this client'
+
+	return jsonify(err_msg = err_msg)
+
 
 
 

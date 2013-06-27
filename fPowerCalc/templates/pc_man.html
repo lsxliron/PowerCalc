@@ -12,7 +12,6 @@
 	</head>
 
 	<body>
-		<input type="hidden" id="hid">
 		<p>place holder for instructions</p> 
 		<h3>Client Form</h3>
 		<form method="POST" id="clientForm">
@@ -50,13 +49,13 @@
 			</select><br>
 			<label> Software Version:</label>
 			<select id="softwarePath">
-				<option value="/Applications/MATLAB_R2012b.app/bin">R2012b (Version 8.00) 2012</option>
-				<option value="/Applications/MATLAB_R2012a.app/bin">R2012a (Version 7.14) 2012</option>
-				<option value="/Applications/MATLAB_R2011b.app/bin">R2011b (Version 7.13) 2011</option>
-				<option value="/Applications/MATLAB_R2011a.app/bin">R2011a (Version 7.12) 2011</option>
-				<option value="/Applications/MATLAB_R2010b.app/bin">R2010b (Version 7.11) 2010</option>
+				<option value="/Applications/MATLAB_R2012b.app/bin/matlab">R2012b (Version 8.00) 2012</option>
+				<option value="/Applications/MATLAB_R2012a.app/bin/matlab">R2012a (Version 7.14) 2012</option>
+				<option value="/Applications/MATLAB_R2011b.app/bin/matlab">R2011b (Version 7.13) 2011</option>
+				<option value="/Applications/MATLAB_R2011a.app/bin/matlab">R2011a (Version 7.12) 2011</option>
+				<option value="/Applications/MATLAB_R2010b.app/bin/matlab">R2010b (Version 7.11) 2010</option>
 			</select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDisabled if clients OS is Windows<br>
-			<input type="button" id="swSubmit" value="Add Software" style="width:200px"> 
+			<input type="button" id="swSubmit" value="Add Software" style="width:100px" > 
 			<sapn id="swSuccessSpan"></span>
 			
 		</form>

@@ -20,14 +20,15 @@ def config():
 	return render_template('pc_man.html',clients = clients_dict)
 
 
-@app.route("/_pc_man/")
+@app.route("/_pc_man/", methods=['POST'])
 def add_client_to_db():
-	clientName = request.args.get('clientName','',type=str)
-	clientUsername = request.args.get('clientUsername','',type=str)
-	clientPassword = request.args.get('clientPassword','',type=str)
-	clientIP = request.args.get('clientIP','',type=str)
-	clientPort = request.args.get('clientPort',type=int)
-	clientOS = request.args.get('clientOS','',type=str)
+
+	clientName = str(request.form['clientName'])
+	clientUsername = str(request.form['clientUsername'])
+	clientPassword = str(request.form['clientPassword'])
+	clientIP = str(request.form['clientIP'])
+	clientPort = str(request.form['clientPort'])
+	clientOS = str(request.form['clientOS'])
 	
 	#Variables
 	ip_valid = False	#for database enteries
@@ -60,6 +61,8 @@ def add_client_to_db():
 	'''
 	try:
 		clientPort = int(clientPort)
+		if not (clientPort > 0 and clientPort < 65535):
+			raise Exception
 		port_valid = True
 
 	except:
@@ -92,15 +95,15 @@ def config1():
 	os = database.get_client_os(client)
 	return jsonify(os = os)
 
-@app.route('/_pc_man_add_sw/')
+@app.route('/_pc_man_add_sw/', methods=['POST'])
 def add_software_to_db():
-	software_name = request.args.get('softwareName','',type=str)
-	client_name = request.args.get('clientName','',type=str)
-	software_path = request.args.get('softwarePath','',type=str)
-	print software_name +" ||||||||| "+client_name+" ||||||||| "+software_path
+	software_name = str(request.form['softwareName'])
+	client_name = str(request.form['clientName'])
+	software_path = str(request.form['softwarePath'])
+
 	err_msg = ''
 	os = database.get_client_os(client_name)
-	#print "||||||||||"+os+"|||||||||||"
+
 	if (os == 'WINDOWS'):
 		software_path = "matlab"
 
@@ -110,9 +113,6 @@ def add_software_to_db():
 		err_msg = 'Software already exists for this client'
 
 	return jsonify(err_msg = err_msg)
-
-
-
 
 
 

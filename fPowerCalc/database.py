@@ -133,7 +133,6 @@ def add_software_to_database(sw_name, client_name, sw_path):
 	'''
 	Insert a software to the database database
 	'''
-	print "______" +  sw_name +" ||||||||| "+client_name+" ||||||||| "+sw_path+"___________"
 	try:
 		session = get_session()
 

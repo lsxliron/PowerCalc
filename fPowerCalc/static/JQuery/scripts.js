@@ -113,23 +113,43 @@ $(document).ready(function ()
 	//Enables and disables the software version dropdown list
 	$("#softwareClient").change(function()
 	{
-		$.getJSON('/_pc_man_sw',
-		{
-			clientName:$("#softwareClient").val()
-		},
-		function(data)
-		{
-			if (data.os == "WINDOWS")
+		$.ajax({
+			url:'/_pc_man_sw/',
+			method:'POST',
+			data:
 			{
-				$("#softwarePath").attr('disabled',true);
-			}
-			else
+				clientName:$("#softwareClient").val()
+			},
+			success:function(data)
 			{
-				$("#softwarePath").attr('disabled',false);	
+				if (data.os == "WINDOWS")
+				{
+					$("#softwarePath").attr('disabled',true);
+				}
+				else
+				{
+					$("#softwarePath").attr('disabled',false);	
+				}
 			}
-
 		});
 	});
+		// $.getJSON('/_pc_man_sw',
+		// {
+		// 	clientName:$("#softwareClient").val()
+		// },
+		// function(data)
+		// {
+		// 	if (data.os == "WINDOWS")
+		// 	{
+		// 		$("#softwarePath").attr('disabled',true);
+		// 	}
+		// 	else
+		// 	{
+		// 		$("#softwarePath").attr('disabled',false);	
+		// 	}
+
+		// });
+	// });
 
 
 

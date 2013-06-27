@@ -89,9 +89,10 @@ def add_client_to_db():
 				   success_msg = success_msg
 				   )
 
-@app.route('/_pc_man_sw/')
+@app.route('/_pc_man_sw/', methods=['POST'])
 def config1():
-	client = request.args.get('clientName','',type=str)
+	client = str(request.form['clientName'])
+	
 	os = database.get_client_os(client)
 	return jsonify(os = os)
 

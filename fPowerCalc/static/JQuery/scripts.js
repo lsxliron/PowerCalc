@@ -133,25 +133,4 @@ $(document).ready(function ()
 			}
 		});
 	});
-		// $.getJSON('/_pc_man_sw',
-		// {
-		// 	clientName:$("#softwareClient").val()
-		// },
-		// function(data)
-		// {
-		// 	if (data.os == "WINDOWS")
-		// 	{
-		// 		$("#softwarePath").attr('disabled',true);
-		// 	}
-		// 	else
-		// 	{
-		// 		$("#softwarePath").attr('disabled',false);	
-		// 	}
-
-		// });
-	// });
-
-
-
-	//});
 });

@@ -1,10 +1,17 @@
 from socket import *
 from subprocess import call
 import re
+from database import Client as Client
+from database import Software as Software
 
 
 
 def main():
+	#Get database session and engine
+	engine = database.get_engine()
+	session = database.get_session()
+
+
 	HOST = '192.168.1.33' #The server IP
 	PORT = 9000	#PORT
 
@@ -36,6 +43,32 @@ def main():
 
 		#reply = raw_input("Reply: ") 
 		#conn.sendall(reply)
+
+		user_msg = repr(data).split(' ')
+		if (user_msg[0] == 'Matlab'):	#Case user uses matlab
+			#get client ip, username and password
+			client_ip = ''
+			client_pass = ''
+			client_username = ''
+
+			client_name = user_msg[1]
+
+			for client in session.query(Client).filter(Client.name == client_name):
+				client_ip = client.IP
+				client_pass = client.password
+				client_username = client.username
+
+			#case that client doesnt exists
+			if (client_ip == None or client_pass == None or client_username == None):
+				conn.sendall ('Client does not exists in the system.')
+
+			else:
+				conn.sendall("SO FAR SO GOOD")
+
+
+
+
+
 
 		#Matlab Methods
 		if (repr(data)== "'Matlab'"):

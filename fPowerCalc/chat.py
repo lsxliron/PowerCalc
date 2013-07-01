@@ -42,6 +42,7 @@ def main():
 		client_pass = ''
 		client_username = ''
 		sw_path = ''
+		client_os = ''
 
 
 		#CONVERTING USER MESSAGE TO A LIST
@@ -92,6 +93,11 @@ def main():
 
 			client_name = user_msg[1]
 
+			#get client os
+			client_os = database.get_client_os(client_name)
+
+
+
 			for client in session.query(Client).filter(Client.name == client_name):
 				client_ip = client.IP
 				client_pass = client.password
@@ -103,7 +109,7 @@ def main():
 			if (client_ip == None or client_pass == None or client_username == None):
 				conn.sendall ('Client does not exists in the system.')
 
-			else:
+			
 				#find software path for this client
 				for software in session.query(Software).filter(Software.client_name == client_name):
 					sw_path = str(software.path)
@@ -112,7 +118,14 @@ def main():
 					conn.sendall("This software does not exists for this client")
 
 				else:	#Execute matlab command	
-					call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+					if (client_os == 'UNIX'):
+						call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+
+					else:
+						call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true))\"",'exit'])
+
+
+
 				
 				
 

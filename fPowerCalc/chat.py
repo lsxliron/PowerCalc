@@ -109,25 +109,35 @@ def main():
 			if (client_ip == None or client_pass == None or client_username == None):
 				conn.sendall ('Client does not exists in the system.')
 
-			
-				#find software path for this client
-				for software in session.query(Software).filter(Software.client_name == client_name):
-					sw_path = str(software.path)
+			# print "______________________________"
+			# print "CLIENT DETAILS:"
+			# print client_name
+			# print client_username
+			# print client_pass
+			# print client_os
+			# print sw_path
+			# print "______________________________"
 
-				if (sw_path == None):
-					conn.sendall("This software does not exists for this client")
+			#find software path for this client
+			for software in session.query(Software).filter(Software.client_name == client_name):
+				sw_path = str(software.path)
 
-				else:	#Execute matlab command	
-					if (client_os == 'UNIX'):
-						call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+			if (sw_path == None):
+				conn.sendall("This software does not exists for this client")
 
-					else:
-						call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true))\"",'exit'])
+			else:	#Execute matlab command	
+				if (client_os == 'UNIX'):
+					print "______________CALLING MAC______________"
+					call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+
+				else:
+					print "______________CALLING HP______________"
+					call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'format','pdf')),exit\""])
 
 
 
 				
-				
+				#"matlab -nodesktop -nosplash -r \"publish('test.m',struct('codeToEvaluate','test(3,4)','showCode',true))\""
 
 #______________________________________________________________________________________________________________
 #												JUNK

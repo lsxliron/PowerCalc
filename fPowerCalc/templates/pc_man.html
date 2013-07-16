@@ -1,6 +1,8 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
-	<head>
+ -->	
+ {%include 'navbar.html'%}
+ 		<head>
 		<link rel="stylesheet" href="{{ url_for('static', filename='styles/pc_man.css') }}">
 		
 		<script type="text/javascript" src="{{ url_for('static', filename='JQuery/jquery-1.10.1.js') }}"></script>
@@ -9,10 +11,25 @@
 		
 		
 	</head>
+	<style>
+	h3{
+		margin-left: 20px;
+	}
+	form{
+		margin-left: 40px;
+	}
+	select{
+		width: 300px;
+	}
+	input{
+		width: 285px;
+	}
+	</style>
 
 	<body>
-		<p>place holder for instructions</p> 
-		<h3>Client Form</h3>
+
+		<!-- <p>place holder for instructions</p>  -->
+		<h3 >Client Form</h3>
 		<form method="POST" id="clientForm">
 			<label> Client Name:</label>
 			<input type="text" id="clientName"><br>
@@ -74,6 +91,8 @@
 			<input type="text" id="matlabSW"><br>
 			<input type="submit" id="matlabSubmit" value="Add Command" style="width:100px"> 
 		</form> -->
+	</div>
+
 
 		
 	</body>

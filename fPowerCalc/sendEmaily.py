@@ -79,4 +79,4 @@ def send_mail(addr, passwd, attch_name, subject, msg_body):
     except:
         print ('Email NOT sent to %s successfully. %s ERR: %s %s %s ', str(toaddr), 'tete', str(sys.exc_info()[0]), str(sys.exc_info()[1]), str(sys.exc_info()[2]) )
    # #just in case
-#send_mail(1,2,'/home/2bz2/Desktop/Screenshot-2.png')
+#send_mail('lsxliron@gmail.com','cxiualbosddgtjef','/home/lsxliron/Desktop/test22.pdf','EMAIL SUBJECT','BODY')

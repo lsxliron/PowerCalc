@@ -3,10 +3,11 @@ from subprocess import call
 import re
 import database
 import sys
+import os
 from database import Client as Client
 from database import Software as Software
-
-
+from sendEmaily import send_mail
+import time
 
 def main():
 	#Get database session and engine
@@ -14,7 +15,7 @@ def main():
 	session = database.get_session()
 
 
-	HOST = '192.168.1.33' #The server IP
+	HOST = '192.168.1.31' #The server IP
 	PORT = 9000	#PORT
 
 	s = socket(AF_INET, SOCK_STREAM)# 98% of all socket programming will use AF_INET and SOCK_STREAM
@@ -53,7 +54,7 @@ def main():
 #______________________________________________________________________________________________________________
 #										CLOSING CONNECTION
 #______________________________________________________________________________________________________________		
-		if (repr(data) == "'EOF'"):
+		if (repr(data) == "'eof'"):
 			s.shutdown(0)
 			s.close()
 
@@ -109,18 +110,27 @@ def main():
 			if (client_ip == None or client_pass == None or client_username == None):
 				conn.sendall ('Client does not exists in the system.')
 
-			# print "______________________________"
-			# print "CLIENT DETAILS:"
-			# print client_name
-			# print client_username
-			# print client_pass
-			# print client_os
-			# print sw_path
-			# print "______________________________"
+			#print "______________________________"
+		        #print "CLIENT DETAILS:"
+			#print client_name
+			#print client_username
+			#print client_pass
+			#print client_os
+			#print sw_path
+			#print "______________________________"
 
 			#find software path for this client
 			for software in session.query(Software).filter(Software.client_name == client_name):
 				sw_path = str(software.path)
+			print "______________________________"
+		        print "CLIENT DETAILS:"
+			print client_name
+			print client_username
+			print client_pass
+			print client_os
+			print sw_path
+			print "______________________________"
+
 
 			if (sw_path == None):
 				conn.sendall("This software does not exists for this client")
@@ -128,14 +138,32 @@ def main():
 			else:	#Execute matlab command	
 				if (client_os == 'UNIX'):
 					print "______________CALLING MAC______________"
-					call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r',"\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
+					print ' '.join(map(str,user_msg[2:len(user_msg)]))
+					call(['sshpass','-p',client_pass,'ssh', '-X', client_username+'@'+client_ip, sw_path, '-nodesktop','-r',"\"publish('/Users/" + client_username + "/Documents/MATLAB/test2.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/" + client_username + "/Desktop','format','pdf')),exit\""])
+                                        					
+					call(['sshpass','-p', client_pass, 'scp',client_username+'@'+client_ip+':/Users/' + client_username + '/Desktop/test2.pdf',str(os.getcwd()) + '/temp.pdf'])
+					send_mail('lsxliron@gmail.com','cxiualbosddgtjef',str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY')
+					call(['rm',str(os.getcwd())+'/temp.pdf'])
+					
 
 				else:
 					print "______________CALLING HP______________"
-					call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'format','pdf')),exit\""])
+					print ' '.join(map(str,user_msg[2:len(user_msg)]))
+					
+					#call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'format','pdf')),exit\""])
+					call(['sshpass', '-p', client_pass, 'ssh', client_username + '@' + client_ip, 'matlab', '-nodesktop', '-r', "\"publish('test.m', struct('codeToEvaluate', '" + ' '.join(map(str,user_msg[2:len(user_msg)])) + "','outputDir','C:\\PCTemp','format','pdf')), exit;\""])
+					while not os.path.isfile(str(os.getcwd()) + '/temp.pdf'):
+						call(['sshpass','-p', client_pass,'sftp',client_username+'@'+client_ip+':test.pdf',str(os.getcwd()) + '/temp.pdf'])
+						time.sleep(30)
+	
+					call(['sshpass','-p', client_pass, 'ssh',client_username + '@' + client_ip, 'cmd /c  del /Q C:\\PCTemp\\test.pdf'])
+					send_mail('lsxliron@gmail.com','cxiualbosddgtjef',str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY')
+					call(['rm',str(os.getcwd())+'/temp.pdf'])
+					
+	
 
 
-
+	
 				
 				#"matlab -nodesktop -nosplash -r \"publish('test.m',struct('codeToEvaluate','test(3,4)','showCode',true))\""
 
@@ -144,7 +172,7 @@ def main():
 #______________________________________________________________________________________________________________
 
 		#Matlab Methods
-		if (repr(data)== "'Matlab1'"):
+		if (repr(data) == "'Matlab1'"):
 			conn.sendall("Please enter the method name and arguments foo(a,b)\n")
 			data=conn.recv(1024)
 			func=re.findall(r'\'.*\'',repr(data))

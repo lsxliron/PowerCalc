@@ -7,15 +7,71 @@ from email import Encoders
 from time import strftime, localtime
 
 
+'''
+GETS ALL THE INFO FROM fpc.conf
+'''
+def getInfo():
+	currentDir = os.getcwd()
+	dataFile = open(currentDir + '/fpc.conf','r')
+	
+	#get data
+	for line in dataFile.readlines():
+	#FIND EMAIL
+		if (len(re.findall("email=.*",line)) != 0): #EMAIL FOUND
+			user_email = re.findall("=.*",line)	
+			user_email = user_email[0][1:]
+			
+		if (len(re.findall("user_pass=.*",line)) != 0): #EMAIL FOUND
+			user_pass = re.findall("=.*",line)	
+			user_pass = user_pass[0][1:]
+
+		if (len(re.findall("IP=.*",line)) != 0): #EMAIL FOUND
+			server_IP = re.findall("=.*",line)	
+			server_IP = server_IP[0][1:]
+	
+		if (len(re.findall("PORT=.*",line)) != 0): #EMAIL FOUND
+			port = re.findall("=.*",line)	
+			port = port[0][1:]
+
+	data = [user_email, user_pass, server_IP, port]
+	return data
+
+def getMessageBody():
+	homeDir = os.getenv('HOME')
+	dataFile = open(homeDir + '/PowerCalcTempFiles/tempData.txt')
+	body = dataFile.readlines()
+	body = ''.join(map(str,body))
+	dataFile.close()
+	return body
+
+def getMessageSubject():
+	homeDir = os.getenv('HOME')
+	dataFile = open(homeDir + '/PowerCalcTempFiles/tempDataSubject.txt')
+	subject = dataFile.readlines()
+	subject = ''.join(map(str,subject))
+	dataFile.close()
+	return subject
+
+
+
 #VARIABLES TO SETUP
-def send_mail(addr, passwd, attch_name, subject, msg_body):
+def send_mail(subject, msg_body, lang='ruby'):
     '''
     Sends email to a specific address
     '''
-    attachmentname =  attch_name #path to an attachment, if you wish
-    username = addr
-    password = passwd
+
+    #GET MESSAGE BODY FOR SIRIPROXY
+    if (lang != 'python'):
+        msg_body = getMessageBody()
+	subject = getMessageSubject()
     
+    dataList = getInfo()
+    attachmentname =  os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'  #path to an attachment, if you wish
+    addr= dataList[0]
+    username = dataList[0]
+    password = dataList[1]
+    
+   
 
     fromaddr = '<'+ addr +'>' #must be a vaild 'from' addy in your GApps account
     toaddr  = '<' + addr + '>'
@@ -34,7 +90,7 @@ def send_mail(addr, passwd, attch_name, subject, msg_body):
 
     #ok,here goes nothing
     try:
-        print email.Utils.parseaddr(username)
+#        print email.Utils.parseaddr(username)
         msgtext = htmlmsgtext.replace('<b>','').replace('</b>','').replace('<br>',"\r").replace('</br>',"\r").replace('<br/>',"\r").replace('</a>','')
         msgtext = re.sub('<.*?>','',msgtext)
 
@@ -63,10 +119,11 @@ def send_mail(addr, passwd, attch_name, subject, msg_body):
     ##msg.add_header('Bcc', bccaddy)  #doesn't work apparently
         msg.add_header('Subject', msgsubject)
         msg.add_header('Reply-To', replyto)
-    
-    # The actual email sendy bits
+   
+ # The actual email sendy bits
         server = smtplib.SMTP('smtp.gmail.com:587')
         server.set_debuglevel(True) #commenting this out, changing to False will make the script give NO output at all upon successful completion
+	
         server.starttls()
         server.login(username,password)
         server.sendmail(msg['From'], [msg['To']], msg.as_string())
@@ -79,4 +136,5 @@ def send_mail(addr, passwd, attch_name, subject, msg_body):
     except:
         print ('Email NOT sent to %s successfully. %s ERR: %s %s %s ', str(toaddr), 'tete', str(sys.exc_info()[0]), str(sys.exc_info()[1]), str(sys.exc_info()[2]) )
    # #just in case
-#send_mail('lsxliron@gmail.com','cxiualbosddgtjef','/home/lsxliron/Desktop/test22.pdf','EMAIL SUBJECT','BODY')
+#send_mail('/home/lsxliron/Desktop/test22.pdf','EMAIL SUBJECT','BODY','')
+#send_mail('SS','BB')

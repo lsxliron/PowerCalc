@@ -6,17 +6,20 @@ import sys
 import os
 from database import Client as Client
 from database import Software as Software
-from sendEmaily import send_mail
+from sendEmaily import send_mail, getInfo
 import time
+
 
 def main():
 	#Get database session and engine
 	engine = database.get_engine()
 	session = database.get_session()
-
-
-	HOST = '192.168.1.31' #The server IP
-	PORT = 9000	#PORT
+	
+	#SET VARIABLES
+	dataList = getInfo()
+	HOST = dataList[2] #The server IP
+	PORT = int(dataList[3]) #PORT
+	
 
 	s = socket(AF_INET, SOCK_STREAM)# 98% of all socket programming will use AF_INET and SOCK_STREAM
 	s.bind((HOST, PORT)) 
@@ -142,7 +145,8 @@ def main():
 					call(['sshpass','-p',client_pass,'ssh', '-X', client_username+'@'+client_ip, sw_path, '-nodesktop','-r',"\"publish('/Users/" + client_username + "/Documents/MATLAB/test2.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/" + client_username + "/Desktop','format','pdf')),exit\""])
                                         					
 					call(['sshpass','-p', client_pass, 'scp',client_username+'@'+client_ip+':/Users/' + client_username + '/Desktop/test2.pdf',str(os.getcwd()) + '/temp.pdf'])
-					send_mail('lsxliron@gmail.com','cxiualbosddgtjef',str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY')
+					send_mail(str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY','python')
+					send_mail('EMAIL SUBJECT','BODY','python')
 					call(['rm',str(os.getcwd())+'/temp.pdf'])
 					
 
@@ -157,7 +161,8 @@ def main():
 						time.sleep(30)
 	
 					call(['sshpass','-p', client_pass, 'ssh',client_username + '@' + client_ip, 'cmd /c  del /Q C:\\PCTemp\\test.pdf'])
-					send_mail('lsxliron@gmail.com','cxiualbosddgtjef',str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY')
+					send_mail(str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY','python')
+					send_mail('EMAIL SUBJECT','BODY','python')
 					call(['rm',str(os.getcwd())+'/temp.pdf'])
 					
 	

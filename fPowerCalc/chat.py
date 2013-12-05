@@ -53,7 +53,10 @@ def main():
 		temp_user_msg = repr(data)
 		temp_user_msg = temp_user_msg[1:-1]
 		user_msg = temp_user_msg.split(' ')
-		
+		function = user_msg[2]
+		function = re.findall(".*?\(", function)
+		function = function[0][:-1]
+		print function
 #______________________________________________________________________________________________________________
 #										CLOSING CONNECTION
 #______________________________________________________________________________________________________________		
@@ -138,16 +141,18 @@ def main():
 			if (sw_path == None):
 				conn.sendall("This software does not exists for this client")
 
-			else:	#Execute matlab command	
+			else:	#Execute matlab command
+				conn.sendall("Processing calculation.\nThe published document will be sent to your email.\n")
+		
 				if (client_os == 'UNIX'):
 					print "______________CALLING MAC______________"
 					print ' '.join(map(str,user_msg[2:len(user_msg)]))
-					call(['sshpass','-p',client_pass,'ssh', '-X', client_username+'@'+client_ip, sw_path, '-nodesktop','-r',"\"publish('/Users/" + client_username + "/Documents/MATLAB/test2.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/" + client_username + "/Desktop','format','pdf')),exit\""])
+					call(['sshpass','-p',client_pass,'ssh', '-X', client_username+'@'+client_ip, sw_path, '-nodesktop','-r',"\"publish('/Users/" + client_username + "/Documents/MATLAB/" + function  + ".m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/" + client_username + "/Documents/MATLAB','format','pdf')),exit\""])
                                         					
-					call(['sshpass','-p', client_pass, 'scp',client_username+'@'+client_ip+':/Users/' + client_username + '/Desktop/test2.pdf',str(os.getcwd()) + '/temp.pdf'])
-					send_mail(str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY','python')
-					send_mail('EMAIL SUBJECT','BODY','python')
-					call(['rm',str(os.getcwd())+'/temp.pdf'])
+					call(['sshpass','-p', client_pass, 'scp',client_username+'@'+client_ip+':/Users/' + client_username + '/Documents/MATLAB/'+function+'.pdf',os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'])
+					send_mail('Your results for '+function,'<h2>The attached file is your Matlab published file</h2><br><h4>Produced by PowerCalc</h4>','python')
+					#send_mail('EMAIL SUBJECT','BODY','python')
+					call(['rm','-f', os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'])
 					
 
 				else:
@@ -155,15 +160,18 @@ def main():
 					print ' '.join(map(str,user_msg[2:len(user_msg)]))
 					
 					#call(['sshpass','-p',client_pass,'ssh', client_username+'@'+client_ip, sw_path,'-nodesktop','-noawt','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'format','pdf')),exit\""])
-					call(['sshpass', '-p', client_pass, 'ssh', client_username + '@' + client_ip, 'matlab', '-nodesktop', '-r', "\"publish('test.m', struct('codeToEvaluate', '" + ' '.join(map(str,user_msg[2:len(user_msg)])) + "','outputDir','C:\\PCTemp','format','pdf')), exit;\""])
-					while not os.path.isfile(str(os.getcwd()) + '/temp.pdf'):
-						call(['sshpass','-p', client_pass,'sftp',client_username+'@'+client_ip+':test.pdf',str(os.getcwd()) + '/temp.pdf'])
+					call(['sshpass', '-p', client_pass, 'ssh', client_username + '@' + client_ip, 'matlab', '-nodesktop', '-r', "\"publish('"+function+".m', struct('codeToEvaluate', '" + ' '.join(map(str,user_msg[2:len(user_msg)])) + "','outputDir','C:\\PCTemp','format','pdf')), exit;\""])
+					print "CONNETCED"
+					while not os.path.isfile(os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'):
+						call(['sshpass','-p', client_pass,'sftp',client_username+'@'+client_ip+':'+function+'.pdf',os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'])
 						time.sleep(30)
 	
 					call(['sshpass','-p', client_pass, 'ssh',client_username + '@' + client_ip, 'cmd /c  del /Q C:\\PCTemp\\test.pdf'])
-					send_mail(str(os.getcwd())+'/temp.pdf','EMAIL SUBJECT','BODY','python')
-					send_mail('EMAIL SUBJECT','BODY','python')
-					call(['rm',str(os.getcwd())+'/temp.pdf'])
+					#send_mail(os.getenv('HOME')+'/PowerCalcTempFiles/temp.pdf','EMAIL SUBJECT','BODY','python')
+					#send_mail('EMAIL SUBJECT','BODY','python')
+					send_mail('Your results for '+function,'<h2>The attached file is your Matlab published file</h2><br><h4>Produced by PowerCalc</h4>','python')
+	
+					call(['rm',os.getenv('HOME')+'/PowerCalcTempFiles/temp.pdf'])
 					
 	
 

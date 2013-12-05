@@ -11,8 +11,9 @@ from time import strftime, localtime
 GETS ALL THE INFO FROM fpc.conf
 '''
 def getInfo():
-	currentDir = os.getcwd()
-	dataFile = open(currentDir + '/fpc.conf','r')
+	currentDir = os.getenv('HOME')
+	repo = "/Desktop/sp2test/sp1-nb/fPowerCalc"
+	dataFile = open(currentDir + repo + '/fpc.conf','r')
 	
 	#get data
 	for line in dataFile.readlines():

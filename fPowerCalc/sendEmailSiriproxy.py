@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from sendEmaily import send_mail
 
 def main():

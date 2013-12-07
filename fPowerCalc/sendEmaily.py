@@ -15,28 +15,32 @@ def getInfo():
 	repo = "/Desktop/sp2test/sp1-nb/fPowerCalc"
 	dataFile = open(currentDir + repo + '/fpc.conf','r')
 	
-	#get data
+	#GET USER DATA
 	for line in dataFile.readlines():
 	#FIND EMAIL
 		if (len(re.findall("email=.*",line)) != 0): #EMAIL FOUND
 			user_email = re.findall("=.*",line)	
 			user_email = user_email[0][1:]
 			
-		if (len(re.findall("user_pass=.*",line)) != 0): #EMAIL FOUND
+		if (len(re.findall("user_pass=.*",line)) != 0): #PASSWORD FOUND
 			user_pass = re.findall("=.*",line)	
 			user_pass = user_pass[0][1:]
 
-		if (len(re.findall("IP=.*",line)) != 0): #EMAIL FOUND
+		if (len(re.findall("IP=.*",line)) != 0): #IP FOUND
 			server_IP = re.findall("=.*",line)	
 			server_IP = server_IP[0][1:]
 	
-		if (len(re.findall("PORT=.*",line)) != 0): #EMAIL FOUND
+		if (len(re.findall("PORT=.*",line)) != 0): #PORT FOUND
 			port = re.findall("=.*",line)	
 			port = port[0][1:]
 
 	data = [user_email, user_pass, server_IP, port]
 	return data
 
+
+'''
+Reads the email body from external file and return it
+'''
 def getMessageBody():
 	homeDir = os.getenv('HOME')
 	dataFile = open(homeDir + '/PowerCalcTempFiles/tempData.txt')
@@ -45,6 +49,9 @@ def getMessageBody():
 	dataFile.close()
 	return body
 
+'''
+Reads the email subject from external file and return it
+'''
 def getMessageSubject():
 	homeDir = os.getenv('HOME')
 	dataFile = open(homeDir + '/PowerCalcTempFiles/tempDataSubject.txt')
@@ -77,28 +84,22 @@ def send_mail(subject, msg_body, lang='ruby', attachment=0):
     
    
 
-    fromaddr = '<'+ addr +'>' #must be a vaild 'from' addy in your GApps account
+    fromaddr = '<'+ addr +'>'
     toaddr  = '<' + addr + '>'
-    
-    replyto = fromaddr          #unless you want a different reply-to
-
+    replyto = fromaddr          
     msgsubject = subject
-
     time  =  strftime("%b %d %Y at %H:%M:%S",localtime())
     htmlmsgtext = msg_body +'</br></br></br>' + time
-    #--------------------------------------------------------------------------------
+    
 
 
 
 
-
-    #ok,here goes nothing
+    
     try:
-#        print email.Utils.parseaddr(username)
         msgtext = htmlmsgtext.replace('<b>','').replace('</b>','').replace('<br>',"\r").replace('</br>',"\r").replace('<br/>',"\r").replace('</a>','')
         msgtext = re.sub('<.*?>','',msgtext)
 
-        #pain the ass mimey stuff
         msg = MIMEMultipart()
         msg.preamble = 'This is a multi-part message in MIME format.\n'
         msg.epilogue = ''
@@ -119,12 +120,10 @@ def send_mail(subject, msg_body, lang='ruby', attachment=0):
     
         msg.add_header('From', fromaddr)
         msg.add_header('To', toaddr)
-    ##msg.add_header('Cc', ccaddy)    #doesn't work apparently
-    ##msg.add_header('Bcc', bccaddy)  #doesn't work apparently
         msg.add_header('Subject', msgsubject)
         msg.add_header('Reply-To', replyto)
    
- # The actual email sendy bits
+ 
         server = smtplib.SMTP('smtp.gmail.com:587')
         server.set_debuglevel(False) #commenting this out, changing to False will make the script give NO output at all upon successful completion
 	
@@ -132,13 +131,10 @@ def send_mail(subject, msg_body, lang='ruby', attachment=0):
         server.login(username,password)
         server.sendmail(msg['From'], [msg['To']], msg.as_string())
     
-        server.quit() #bye bye
+        server.quit() 
 
 
 
 
     except:
         print ('Email NOT sent to %s successfully. %s ERR: %s %s %s ', str(toaddr), 'tete', str(sys.exc_info()[0]), str(sys.exc_info()[1]), str(sys.exc_info()[2]) )
-   # #just in case
-#send_mail('/home/lsxliron/Desktop/test22.pdf','EMAIL SUBJECT','BODY','')
-#send_mail('SS','BB')

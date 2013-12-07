@@ -11,7 +11,7 @@ import time
 
 
 def main():
-	#Get database session and engine
+	#GET DATABASE SESSION AND ENGINE
 	engine = database.get_engine()
 	session = database.get_session()
 	
@@ -20,26 +20,27 @@ def main():
 	HOST = dataList[2] #The server IP
 	PORT = int(dataList[3]) #PORT
 	
-
-	s = socket(AF_INET, SOCK_STREAM)# 98% of all socket programming will use AF_INET and SOCK_STREAM
+	#CONNECTION SETUP
+	s = socket(AF_INET, SOCK_STREAM)
 	s.bind((HOST, PORT)) 
-	s.listen(1) # how many connections it can receive at one time 
-	conn, addr = s.accept() # accept the connection
+	s.listen(1) 
+	conn, addr = s.accept() 
 	print (str(conn))
 	print str(addr)
 
-	print 'Connected by', addr # print the address of the person connected
+	#PRINT ADDRESS OF CONNECTED DEVICE
+	print 'Connected by', addr 
 
 	while True: 
-
-
 		
-		data = conn.recv(1024) #recives datae using conn and store into data print "Received ", 
+
+		data = conn.recv(1024) 
 		if (repr(data) == "''"):	
 			conn, addr = s.accept()
 		
+		#PRINT MESSAGES TO THE DISPLAY
 		else:
-			print repr(data) # print data; Data is the message the users types `
+			print repr(data) 
 
 		##VARIABLES:
 		client_ip = ''
@@ -67,11 +68,10 @@ def main():
 			s.close()
 
 #______________________________________________________________________________________________________________
-#				Clients Screenshots (UNIX ONLY)
+#				Clients Screenshots 
 #______________________________________________________________________________________________________________		
 
 		#Takes a screenshot from the mac.
-		#Need to change parameters as ip, users and libraries
 		if (user_msg[0]=='snapshot'):
 			client_name = user_msg[1]
 			
@@ -81,6 +81,7 @@ def main():
 				client_username = client.username
 				client_os = client.OS
 			
+			#CASE CLIENT IS MACOS
 			if (client_os == 'UNIX'):
 				conn.sendall('A snapshot from you computer webcam will be sent to your email soon.\n\n')
 				print "DEBUG: TAKING SNAPSHOT"
@@ -97,7 +98,7 @@ def main():
 
 				print 'DEBUG: COMPLETE.\n\n SERVER IS NOW READY.\n\n'
 
-				
+			#CASE CLIENT IS WINDOWS	
 			elif (client_os == "WINDOWS"):
 				
 				conn.sendall('A snapshot from you computer webcam will be sent to your email soon.\n\n')
@@ -122,13 +123,12 @@ def main():
 
 		
 		
-		if (user_msg[0] == 'Matlab'):	#Case user uses matlab
-			#get client ip, username and password
+		if (user_msg[0] == 'Matlab'):	
 			
-
+			#GET CLIENT USER, IP AND PASSWORD
 			client_name = user_msg[1]
 
-			#get client os
+			#GET CLIENT OS
 			client_os = database.get_client_os(client_name)
 
 
@@ -140,12 +140,12 @@ def main():
 
 
 
-			#case that client doesnt exists
+			#CASE THAT CLIENT DOES NOT EXISTS
 			if (client_ip == None or client_pass == None or client_username == None):
 				conn.sendall ('Client does not exists in the system.')
 
 
-			#find software path for this client
+			#FIND SOFTWARE PATH FOR CLIENT
 			for software in session.query(Software).filter(Software.client_name == client_name):
 				sw_path = str(software.path)
 			print "______________________________"
@@ -204,57 +204,6 @@ def main():
 					
 					print "DEBUG: COMPLETE\n\nSERVER READY\n\n"
 	
-
-
-	
-				
-				#"matlab -nodesktop -nosplash -r \"publish('test.m',struct('codeToEvaluate','test(3,4)','showCode',true))\""
-
-#______________________________________________________________________________________________________________
-#												JUNK
-#______________________________________________________________________________________________________________
-
-		#Matlab Methods
-		if (repr(data) == "'Matlab1'"):
-			conn.sendall("Please enter the method name and arguments foo(a,b)\n")
-			data=conn.recv(1024)
-			func=re.findall(r'\'.*\'',repr(data))
-			if (len(data) > 0):
-				func = func[0]
-				func = func[1:-1]
-				print func + " PRINTED BY ME"
-				eval(func)
-				conn.sendall("Simulation successful, the published document was sent to your email.")
-			#if (repr(data)=="''"):
-			#	conn, addr = s.accept()
-
-			if (repr(data) == "'test'"):
-				print "!!!"
-				testMethod(1,2)
-
-
-
-
-
-			if (repr(data) == "'ssh'"):
-				print "!!!!"
-				sshtest(1,2)
-				
-
-
-def sshtest(a, b):
-	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','/Applications/MATLAB_R2012a.app/bin/matlab','-noawt', '-nodesktop','-nosplash','-r', "\"publish('test.m',struct('codeToEvaluate','test("+str(a)+","+str(b)+")','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit\""])
-	call (['sshpass','-p','1qaz','scp','lsxliron@192.168.1.32:/Users/lsxliron/Desktop/test.pdf','/home/lsxliron/Desktop/temp.pdf'])
-	call (['sshpass','-p','1qaz','ssh','lsxliron@192.168.1.32','rm','/Users/lsxliron/Desktop/test.pdf'])
-	call (['python',"/home/lsxliron/Desktop/1.py"])
-
-
-def testMethod(a, b):
-	call (['/Applications/MATLAB_R2012a.app/bin/matlab','-noawt', '-nodesktop','-nosplash','-r', "publish('test.m',struct('codeToEvaluate','test(1,2)','showCode',true,'outputDir','/Users/lsxliron/Desktop','format','pdf')),exit"])
-
-
-#reply = raw_input("Reply: ") 
-		#conn.sendall(reply)
 
 
 if __name__ == '__main__':

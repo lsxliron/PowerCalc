@@ -4,19 +4,17 @@
 		<title>PowerCalc Configuration</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.css') }}">
 		<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
-		<!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles/hompage.css') }}"> -->
+	
 		<style>
 	body
 	{
 		padding-bottom: 40px;
   		color: #5a5a5a;
+      background-color: #E8E8E8;
 	}
 
   	
-    /* CUSTOMIZE THE CAROUSEL
-    -------------------------------------------------- */
-
-    /* Carousel base class */
+    
     .carousel {
       margin-bottom: 60px;
     }
@@ -63,26 +61,23 @@
     }
     .carousel-caption .btn {
       margin-top: 10px;
+
+    }
+
+    .mainImage{
+      width:100%;
+      height: 110%
+      
     }
 
 	</style>
 	</head>
 	<body>
-	</div>
-    <!-- Carousel
-    ================================================== -->
-    <div id="myCarousel" class="carousel slide">
-      <div class="carousel-inner">
-        <div class="item active">
-          <img src="{{ url_for('static', filename='Images/placeholder.gif') }}" alt="">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1><br><br>Example headline.</h1>
-              <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <!-- <a class="btn btn-large btn-primary" href="#">Sign up today</a> -->
-            </div>
-          </div>
-        </div>
+          <img class="mainImage" src="{{ url_for('static', filename='Images/mainPic.jpg') }}" alt="Front Page Image">
+          <h1 style="text-align:center; "><br><br>Welcome to PowerCalc</h1>
+          <h4 style="text-align:center">Senior Design Project By Liron Shimrony and Yomatan Shimrony<h4>
+          <h5 style="text-align:center">CCNY Fall 2013</h5>
+      
 
 
 		

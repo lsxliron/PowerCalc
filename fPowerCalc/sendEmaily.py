@@ -126,7 +126,7 @@ def send_mail(subject, msg_body, lang='ruby', attachment=0):
    
  # The actual email sendy bits
         server = smtplib.SMTP('smtp.gmail.com:587')
-        server.set_debuglevel(True) #commenting this out, changing to False will make the script give NO output at all upon successful completion
+        server.set_debuglevel(False) #commenting this out, changing to False will make the script give NO output at all upon successful completion
 	
         server.starttls()
         server.login(username,password)

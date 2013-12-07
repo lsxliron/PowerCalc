@@ -93,7 +93,7 @@ def main():
 				send_mail('Your snapshot from ' + client_name, '<h3>This picture was taken from your computer.</h3><h4><b>Produced by PowerCalc</b></h4>','python',1)
 
 				print 'DELETING FILE FROM CLIENT'
-				call (['sshpass','-p', client_pass, 'ssh', client_username + '@' + client_ip, 'rm', '/Users/' + client_username + '/Desktop/snap.jpeg', os.getenv('HOME') + '/PowerCalcTempFiles/snap.jpeg'])
+				call (['sshpass','-p', client_pass, 'ssh', client_username + '@' + client_ip, 'rm', '/Users/' + client_username + '/Desktop/snap.jpeg'])
 
 				print 'DEBUG: COMPLETE.\n\n SERVER IS NOW READY.\n\n'
 
@@ -166,14 +166,22 @@ def main():
 		
 				if (client_os == 'UNIX'):
 					print "______________UNIX MATLAB CALL______________"
+					print "DEBUG: EXECUTING FUNCTION:"
 					print ' '.join(map(str,user_msg[2:len(user_msg)]))
 					call(['sshpass','-p',client_pass,'ssh', '-X', client_username+'@'+client_ip, sw_path, '-nodesktop','-r',"\"publish('/Users/" + client_username + "/Documents/MATLAB/" + function  + ".m',struct('codeToEvaluate','" + ' '.join(map(str,user_msg[2:len(user_msg)]))+"','showCode',true,'outputDir','/Users/" + client_username + "/Documents/MATLAB','format','pdf')),exit\""])
-                                        					
+
+					print "DEBUG: COPYING PUBLISHED FILE FROM CLIENT TO SERVER"                                        					
 					call(['sshpass','-p', client_pass, 'scp',client_username+'@'+client_ip+':/Users/' + client_username + '/Documents/MATLAB/'+function+'.pdf',os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'])
+					
+					print "DEBUG: SENDING EMAIL TO USER"
 					send_mail('Your results for '+function,'<h2>The attached file is your Matlab published file</h2><br><h4>Produced by PowerCalc</h4>','python')
-					#send_mail('EMAIL SUBJECT','BODY','python')
+					
+					print "DEBUG: REMOVING FILE FROM CLIENT"
 					call(['rm','-f', os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'])
 					
+
+					print "DEBUG: COMPLETE!\n\nSERVER READY\n\n"
+
 
 				else:
 					print "______________WINDOWS MATLAB CALL______________"

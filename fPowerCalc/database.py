@@ -9,6 +9,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 Base = declarative_base()
 metadata = MetaData()
 
+DATABASE_USER = 'lsxliron'
+
 class Client(Base):
 	'''
 	This class represents the clients computers
@@ -72,9 +74,9 @@ def create_db_if_not_exists():
 		0 - OK
 		1 = Duplicate entry
 	'''
-	engine = create_engine("mysql://lsxliron@localhost", isolation_level="READ_UNCOMMITTED", echo=True)
+	engine = create_engine("mysql://" + DATABASE_USER  + "@localhost", isolation_level="READ_UNCOMMITTED", echo=True)
 	engine.execute("CREATE DATABASE IF NOT EXISTS PowerCalc")
-	engine = create_engine("mysql://lsxliron@localhost/PowerCalc", isolation_level="READ_UNCOMMITTED", echo=True)
+	engine = create_engine("mysql://" + DATABASE_USER +  "@localhost/PowerCalc", isolation_level="READ_UNCOMMITTED", echo=True)
 	Base.metadata.create_all(engine)
 
 
@@ -161,6 +163,6 @@ def get_engine():
 	'''
 	Returns engine for connection with the database
 	'''
-	return  create_engine("mysql://lsxliron@localhost/PowerCalc", isolation_level="READ_UNCOMMITTED", echo=True)
+	return  create_engine("mysql://" + DATABASE_USER + "@localhost/PowerCalc", isolation_level="READ_UNCOMMITTED", echo=True)
 
 	

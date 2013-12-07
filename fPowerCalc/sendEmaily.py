@@ -56,7 +56,7 @@ def getMessageSubject():
 
 
 #VARIABLES TO SETUP
-def send_mail(subject, msg_body, lang='ruby'):
+def send_mail(subject, msg_body, lang='ruby', attachment=0):
     '''
     Sends email to a specific address
     '''
@@ -67,7 +67,10 @@ def send_mail(subject, msg_body, lang='ruby'):
 	subject = getMessageSubject()
     
     dataList = getInfo()
-    attachmentname =  os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'  #path to an attachment, if you wish
+    if (attachment == 0):
+        attachmentname = os.getenv('HOME') + '/PowerCalcTempFiles/temp.pdf'  #PATH TO MATLAB PUBLISHED FILE
+    elif (attachment == 1):
+        attachmentname = os.getenv('HOME') + '/PowerCalcTempFiles/snap.jpeg' #PATH TO SNAPSHOT
     addr= dataList[0]
     username = dataList[0]
     password = dataList[1]

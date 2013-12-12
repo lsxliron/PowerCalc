@@ -19,6 +19,9 @@ def config():
 	clients_dict = dict(zip(database.get_clients(),database.get_clients_and_ip()))
 	return render_template('pc_man.html',clients = clients_dict)
 
+@app.route('/about/')
+def showAbout():
+	return render_template('about.html')
 
 @app.route("/_pc_man/", methods=['POST'])
 def add_client_to_db():

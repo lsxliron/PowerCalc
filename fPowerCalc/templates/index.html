@@ -66,14 +66,14 @@
 
     .mainImage{
       width:100%;
-      height: 50%
-      
+      height: auto;
+      max-height: 50%; 
     }
 
 	</style>
 	</head>
 	<body>
-          <img style="width:99%;height=200px;float:left;" src="{{ url_for('static', filename='Images/mainPic.jpg') }}" alt="Front Page Image">
+          <img class="mainImage" src="{{ url_for('static', filename='Images/mainPic.jpg') }}" alt="Front Page Image">
          
 	  <h1 style="text-align:center; "><br><br>Welcome to PowerCalc</h1>
           <h4 style="text-align:center">Senior Design Project By Liron Shimrony and Jonaathan Shimrony<h4>

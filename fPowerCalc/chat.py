@@ -152,7 +152,7 @@ def main():
 		        print "CLIENT DETAILS:"
 			print client_name
 			print client_username
-			print client_pass
+			print '************'
 			print client_os
 			print sw_path
 			print "______________________________"

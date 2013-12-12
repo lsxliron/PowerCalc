@@ -13,9 +13,9 @@ GETS ALL THE INFO FROM fpc.conf
 '''
 def getInfo():
 	currentDir = os.getenv('HOME')
-	repo = "/Desktop/sp2test/sp1-nb/fPowerCalc"
+	repo = "/Desktop/sp/sp-mint/fPowerCalc"
+	#dataFile = open(currentDir + repo + '/fpc.conf','r')
 	dataFile = open(currentDir + repo + '/fpc.conf','r')
-	
 	#GET USER DATA
 	for line in dataFile.readlines():
 	#FIND EMAIL
